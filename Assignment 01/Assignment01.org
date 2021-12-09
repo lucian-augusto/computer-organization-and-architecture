@@ -1,0 +1,64 @@
+#+TITLE: Arquitetura e Organização de Computadores - Lista de Exercícios 1
+#+AUTHOR: Lucian Augusto
+#+STARTUP: showeverything
+#+OPTIONS: date:nill toc:nil
+#+LATEX_HEADER: \usepackage{enumitem}
+#+LATEX_HEADER: \usepackage[a4paper,left=25mm,right=25mm,top=25mm,bottom=25mm]{geometry}
+
+* Calcule e mostre o valor decimal de cada um dos números binários de 8 bits da lista a seguir. Mostre os passos utilizados para o cálculo.
+
+o) $00101000$ em complemento de $2$
+p) $01101111$ em excesso $127$
+q) $10010101$ sem sinal
+
+** Respostas:
+o) $00101000$ em complemento de $2$:
+
+   $0 \times (-2^{7}) + 0 \times 2^{6} + 1 \times 2^{5} + 0 \times 2^{4} + 1 \times 2^{3} + 0 \times 2^{2} + 0 \times 2^{1} + 0 \times 2^{0} = 32 + 8 = \textbf{40}$.
+
+p) $01101111$ em excesso $127$
+
+   $0 \times 2^{7} + 1 \times 2^{6} + 1 \times 2^{5} + 0 \times 2^{4} + 1 \times 2^{3} + 1 \times 2^{2} + 1 \times 2^{1} + 1 \times 2^{0} = 64 + 32 + 8 + 4 + 2 + 1 = 101$
+
+   como o valor está em excesso 127, devemos subtrair 127 (lembrando que para converter base $10$ para binário devemos somar 127, portanto para a operação inversa, devemos subtrair):
+
+   $101 - 127 = \textbf{-16}$.
+
+q) $10010101$ sem sinal:
+
+   $1 \times 2^{7} + 0 \times 2^{6} + 0 \times 2^{5} + 1 \times 2^{4} + 0 \times 2^{3} + 1 \times 2^{2} + 0 \times 2^{1} + 1 \times 2^{0} = 128 + 16 + 4 + 1 = \textbf{149}$
+
+* Efetue as seguintes conversões de base:
+
+i) $354_{6}$ = $?_{10}$
+p) $237_{10} = ?_{2}$
+q) $10101101_{2} = ?_{16}$
+
+** Respostas:
+i) $354_{6}$ = $?_{10}$:
+
+   $3 \times 6^{2} + 5 \times 6^{1} + 5 \times 6^{0} = 3 \times 36 + 5 \times 6 + 4 \times 1 = 108 + 30 + 4 = \textbf{142}$
+
+p) $237_{10} = ?_{2}$:
+
+   $\frac{237}{2} = 118 \rightarrow resto 1$
+
+   $\frac{118}{2} = 59 \rightarrow resto 0$
+
+   $\frac{59}{2} = 29 \rightarrow resto 1$
+
+   $\frac{29}{2} = 14 \rightarrow resto 1$
+
+   $\frac{14}{2} = 7 \rightarrow resto 0$
+
+   $\frac{7}{2} = 3 \rightarrow resto 1$
+
+   $\frac{3}{2} = 1 \rightarrow resto 1$
+
+   $\frac{1}{2} = 0 \rightarrow resto 1$
+
+   $\textbf{11101101}$
+
+q) $10101101_{2} = ?_{16}$:
+
+   $1010 1101 = A D = \textbf{AD}$
