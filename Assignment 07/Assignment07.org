@@ -1,0 +1,94 @@
+#+TITLE: Arquitetura e Organização de Computadores - Lista de Exercícios 7
+#+AUTHOR: Lucian Augusto
+#+STARTUP: showeverything
+#+OPTIONS: date:nill toc:nil num:1
+#+LATEX_HEADER: \usepackage[a4paper,left=25mm,right=25mm,top=25mm,bottom=25mm]{geometry}
+#+LATEX_HEADER: \usepackage{xcolor}
+#+LATEX_HEADER: \usepackage{enumitem} \usepackage{amsmath}
+
+* 55. (Tanenbaum, 2013) Usando certa fonte, uma impressora monocromática a laser pode imprimir 50 linhas de 80 caracteres por página. O caractere médio ocupa um quadrado de 2 mm x 2 mm, dos quais cerca de 25% é /toner/. O resto é branco. A camada de /toner/ tem 25 micra de espessura. O cartucho de /toner/ da impressora mede 25 x 8 x 2 cm. Quantas páginas podem ser impressas com um cartucho de /toner/?
+
+** Resposta:
+*** Dados:
+**** Página:
++ $50$ linhas por página;
++ $80$ caracteres por linha;
+
+**** Caractere:
++ Área: $2mm \times 2mm$;
++ 25 da área é efetivamente /toner/;
++ Espessura da camada de /toner/: $25$ \mu;
+
+**** Cartucho de /toner/:
++ Dimensões: $25 \times 8 \times 2$ cm
+
+*** Volume total de /toner/:
+\begin{gather*}
+V_{t} = 25 \times 10^{-2} \cdot 8 \times 10^{-2} \cdot 2 \times 10^{-2} = 50 \cdot 8 \times 10^{-6}\\
+\boldsymbol{V_{t} = 400 \times 10^{-6} m^{3}}
+\end{gather*}
+
+*** Volume de toner por caractere:
+\begin{gather*}
+V_{c} = A_{c} \cdot h = \left[\left(2 \times 10^{-3} \cdot  2 \times 10^{-3}\right) \cdot 0.25\right] \cdot 25 \times 10^{-6}\\
+V_{c} = 4 \times 10^{-6} \cdot 25 \times 10^{-6} = 10^{-6} \cdot 25 \times 10^{-6}\\
+\boldsymbol{V_{c} = 25 \times 10^{-12} m^{3}}
+\end{gather*}
+
+*** Quantidade de caracteres por /toner/:
+\begin{gather*}
+N_{c} = \frac{V_{t}}{V_{c}} = \frac{400 \times 10^{-6}}{25 \times 10^{-12} = 16 \times 10^{-6} \times 10^{12}\\
+\boldsymbol{N_{c} = 16 \times 10^{6}}
+\end{gather*}
+
+*** Número de caracteres por página:
+\begin{gather*}
+N_{c/p} = 50 \cdot 80\\
+\boldsymbol{N_{p} = 4000 caracteres/pagina}
+\end{gather*}
+
+*** Número de páginas:
+\begin{gather*}
+N_{p} = \frac{16 \times 10^{6}}{4000} = \frac{16}{4} \times 10^{6} \times 10^{-3}\\
+\boxed{N_{p} = 4000 paginas}
+\end{gather*}
+
+
+* 57. Considere que um CD possui uma capacidade de 700 MB de dados e que armazena arquivos de áudio digital (formato WAV) com as seguintes características:
++ *Número de amostras digitalizadas por segundo: 44100 (44.1 kHz)*
++ *Tamanho de cada amostra: 16 bits, 2 canais (estéreo)*
+*Calcule quantos minutos de áudio podem ser armazenados neste CD.*
+
+** Resposta:
+*** Dados:
++ Capacidade do CD $700$ Mb;
++ Tamanho da amostra: $16$ bits;
++ Número de canais: $2$;
++ Número de amostras por segundo: $44100$
+
+*** Convertendo a capacidade do CD para bits:
+\begin{gather*}
+700 Mb = 700 \times 10^{6} bytes\\
+1 byte = 8 bits\\
+\boldsymbol{700 Mb = 5.6 \times 10^{9} bits}
+\end{gather*}
+
+*** Quantidade de amostras por CD (16 bits por canal):
+\begin{gather*}
+\frac{5.6 \times 10^{9}}{16 \cdot 2} = \frac{5.6 \times 10^{9}}{32}\\
+\boldsymbol{1.75 \times 10^{8} amostras}
+\end{gather*}
+
+*** Calculando o tempo:
+\begin{gather*}
+1 [s] = 44100\\
+t [s] = 1.75 \times 10^{8}\\
+t = \frac{1.75 \times 10^{8}}{44100}\\
+\boldsymbol{t = 3968.25 s}
+\end{gather*}
+
+*** Convertendo para minutos:
+\begin{gather*}
+t = \frac{3968.25}{60}\\
+\boxed{t = 66.14 min}
+\end{gather*}
