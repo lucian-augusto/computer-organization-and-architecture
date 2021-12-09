@@ -1,0 +1,223 @@
+#+TITLE: Arquitetura e Organização de Computadores - Lista de Exercícios 2
+#+AUTHOR: Lucian Augusto
+#+STARTUP: showeverything
+#+OPTIONS: date:nill toc:nil
+#+LATEX_HEADER: \usepackage{enumitem}
+#+LATEX_HEADER: \usepackage[a4paper,left=25mm,right=25mm,top=25mm,bottom=25mm]{geometry}
+
+* Converta os seguintes números para o formato IEEE 754 de precisão simples, mostrando os passos utilizados para a conversão e apresentando o resultado final em hexadecimal.
+
+b) $128.75$
+e) $-194.875$
+
+** Respostas:
+
+b) $128.75$
+
+   Convertendo a parte inteira:
+
+   $\frac{128}{2} = 64 \rightarrow resto 0$
+
+   $\frac{64}{2} = 32 \rightarrow resto 0$
+
+   $\frac{32}{2} = 16 \rightarrow resto 0$
+   
+   $\frac{16}{2} = 8 \rightarrow resto 0$
+
+   $\frac{8}{2} = 4 \rightarrow resto 0$
+
+   $\frac{4}{2} = 2 \rightarrow resto 0$
+
+   $\frac{2}{2} = 1 \rightarrow resto 0$
+
+   $\frac{1}{2} = 0 \rightarrow resto 1$
+
+   Convertendo a parte decimal:
+
+   $0.75 \times 2 = 1.5 \rightarrow guarda 1$
+
+   $0.5 \times 2 = 1.0 \rightarrow guarda 1$
+
+   $128.75$ em binário: $10000000.11$
+
+   Movendo o ponto para chegar no significando e obter o expoente:
+
+   $10000000.11 \rightarrow 1.000000011 \times 2^{7} \rightarrow expoente 7$
+
+   Montando a mantissa:
+
+   $00000001100000000000000$
+
+   Codificando o expoente em excesso $127$:
+
+   $7 + 127 = 134_ {(10)} \rightarrow 10000110_{(2)}$
+
+   Codificando o sinal:
+
+   Número positivo $\rightarrow 0$
+
+   Portanto, $128.75$ em formato IEEE 754 é $\textbf{01000011000000001100000000000000}$
+
+   Em hexadecimal: $\textbf{4300C000}$
+
+
+e) $-194.875$
+
+   Convertendo a parte inteira:
+
+   $\frac{194}{2} = 97 \rightarrow resto 0$
+
+   $\frac{97}{2} = 48 \rightarrow resto 1$
+
+   $\frac{48}{2} = 24 \rightarrow resto 0$
+
+   $\frac{24}{2} = 12 \rightarrow resto 0$
+
+   $\frac{12}{2} = 6 \rightarrow resto 0$
+
+   $\frac{6}{2} = 3 \rightarrow resto 0$
+
+   $\frac{3}{2} = 1 \rightarrow resto 1$
+
+   $\frac{1}{2} = 0 \rightarrow resto 1$
+
+   Convertendo a parte decimal:
+
+   $0.875 \times 2 = 1.75 \rightarrow guarda 1$
+
+   $0.75 \times 2 = 1.5 \rightarrow guarda 1$
+
+   $0.5 \times 2 = 1.0 \rightarrow guarda 1$
+
+   $194.875$ em binário: $11000010.111$
+
+   Movendo o ponto para chegar no significando e obter o expoente:
+
+   $11000010.111 \rightarrow 1.1000010111 \times 2^{7} \rightarrow expoente 7$
+
+   Montando a Mantissa:
+
+   $10000101110000000000000$
+
+   Codificando o expoente em excesso $127$:
+
+   $7 + 127 = 134_{(10)} \rightarrow 10000110_{(2)}$
+
+   Codificando o sinal:
+
+   Número negativo: $\rightarrow 1$
+
+   Portanto, $-194.875$ em formato IEEE 754 é $\textbf{11000011010000101110000000000000}$
+
+   Em hexadecimal: $\textbf{C342E000}$
+
+* Converta os seguintes números do formato IEEE 754 de precisão simples, apresentados na forma hexadecimal, para o seu valor decimal, mostrando os passos utilizados para a conversão.
+
+b) $3F600000$
+d) $45827A00$
+
+** Respostas:
+
+b) $3F600000$
+
+   Em binário: $3F600000 \rightarrow 00111111011000000000000000000000$
+
+   Semparando as partes:
+
+   $0$ $01111110$ $11000000000000000000000$
+
+   Temos que o número em questão é $\textbf{positivo}$.
+
+   Calculando o expoente:
+
+   $01111110 = 0 \times 2^{7} + 1 \times 2^{6} + 1 \times 2^{5} + 1 \times 2^{4} + 1 \times 2^{3} + 1 \times 2^{2} + 1 \times 2^{1} + 0 \times 2^{0} = 0 + 64 + 32 + 16 + 8 + 4 + 2 + 0 = 126$
+
+   $126 - 127 = -1$
+
+   Decodificando o valor:
+
+   $1.11000000000000000000000 \times 2^{-1} = 0.111$
+
+   $\frac{1}{2} + \frac{1}{4} + \frac{1}{8} = 0.5 + 0.25 + 0.125 = 0.875$
+
+   Portanto, $3F600000$ em decimal será: $\textbf{+0.875}$
+
+d) $45827A00$
+
+   Em binário: $45827A00 \rightarrow 01000101100000100111101000000000$
+
+   Separando em partes:
+
+   $0$ $10001011$ $00000100111101000000000$
+
+   Temos que o número em questão é $\textbf{positivo}$.
+
+   Calculando o expoente:
+
+   $10001011 = 1 \times 2^{7} + 0 \times 2^{6} + 0 \times 2^{5} + 0 \times 2^{4} + 1 \times 2^{3} + 0 \times 2^{2} + 1 \times 2^{1} + 1 \times 2^{0} = 128 + 0 + 0 + 0 + 8 + 0 + 2 + 1 = 139$
+
+   $139 - 127 = 12$
+
+   Decodificando o valor:
+
+   $1.00000100111101000000000 \times 2^{12} = 1000001001111.01$
+
+   Parte inteira:
+
+   $1 \times 2^{12} + 0 \times 2^{11} + 0 \times 2^{10} + 0 \times 2^{9} + 0 \times 2^{8} + 0 \times 2^{7} + 1 \times 2^{6} + 0 \times 2^{5} + 0 \times 2^{4} + 1 \times 2^{3} + 1 \times 2^{2} + 1 \times 2^{1} + 1 \times 2^{0} = 4096 + 64 + 8 + 4 + 2 + 1 = 4175$
+
+   Parte decimal:
+
+   $0 \times (\frac{1}{2}) + 1 \times (\frac{1}{4}) = 0.25$
+
+   Portanto, $45827A00$ em decimal será: $\textbf{+4175.25}$
+
+* Simplifique, se possível, as funções booleanas a seguir. Utilize álgebra booleana ou, alternativamente, mapas de Karnaugh, mostrando os passos utilizados para a simplificação
+
+f) $S = A'.B'.C' + A'.B.C + A'.B.C' + A.B'.C' + A.B.C'$
+
+** Resposta:
+
+f) $S = A'.B'.C' + A'.B.C + A'.B.C' + A.B'.C' + A.B.C'$
+
+   Distributiva ao contrário:
+
+   $S = A'.B'.C' + A'.B.(C + C') + A.B'.C' + A.B.C'$
+
+   Lei do inverso:
+
+   $S = A'.B'.C' + A'.B.1 + A.B'.C + A.B.C'$
+
+   Lei da identidade:
+
+   $S = A'.B'.C' + A'.B + A.B'.C + A.B.C'$
+
+   Distributiva ao contrário:
+
+   $S = A'.(B'.C' + B) + A.B'.C + A.B.C'$
+
+   Distributiva do OR:
+
+   $S = A'.((B' + B). (B + C')) + A.B'.C + A.B.C'$
+
+   Lei do inverso:
+   $S = A'.1. (B + C') + A.B'.C + A.B.C'$
+
+   Lei da identidade e distributiva:
+   $S = A'.B + A'.C' + A.B'.C + A.B.C'$
+
+   Distributiva ao contrário:
+   $S = A'.B + A.B'.C + (A' + A.B).C'$
+
+   Distributiva do OR:
+   $S = A'.B + A.B'.C + ((A' + A) . (A' + B)).C'$
+
+   Lei do inverso:
+   $S = A'.B + A.B'.C + (1 . (A' + B)).C'$
+
+   Lei da Identidade:
+   $S = A'.B + A.B'.C + A'C' + B.C'$
+
+   Assim, a versão simplificada de $S = A'.B'.C' + A'.B.C + A'.B.C' + A.B'.C' + A.B.C'$ pode ser escrita como:
+
+   $\textbf{S = A'.B + A.B'.C + A'C' + B.C'}$
