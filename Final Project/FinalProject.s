@@ -104,8 +104,175 @@ blueButtonLoop:
 	BL Wait
 	add r6, r6, r3
 	BL PrintLCD
+	mov r0, #0
+	swi SWI_CheckBlue
+	cmp r0, #0
+	bne blueButtonCheck    
 	BL blueButtonLoop
 
+
+blueButtonCheck:
+	cmp r0, #BLUE_KEY_15
+	beq randomNumberCheck15
+
+	cmp r0, #BLUE_KEY_14
+	beq randomNumberCheck14
+
+	cmp r0, #BLUE_KEY_13
+	beq randomNumberCheck13
+
+	cmp r0, #BLUE_KEY_12
+	beq randomNumberCheck12
+
+	cmp r0, #BLUE_KEY_11
+	beq randomNumberCheck11
+
+	cmp r0, #BLUE_KEY_10
+	beq randomNumberCheck10
+
+	cmp r0, #BLUE_KEY_09
+	beq randomNumberCheck9
+
+	cmp r0, #BLUE_KEY_08
+	beq randomNumberCheck8
+
+	cmp r0, #BLUE_KEY_07
+	beq randomNumberCheck7
+
+	cmp r0, #BLUE_KEY_06
+	beq randomNumberCheck6
+
+	cmp r0, #BLUE_KEY_05
+	beq randomNumberCheck5
+
+	cmp r0, #BLUE_KEY_04
+	beq randomNumberCheck4
+
+	cmp r0, #BLUE_KEY_03
+	beq randomNumberCheck3
+
+	cmp r0, #BLUE_KEY_02
+	beq randomNumberCheck2
+
+	cmp r0, #BLUE_KEY_01
+	beq randomNumberCheck1
+
+	cmp r0, #BLUE_KEY_00
+	beq randomNumberCheck0
+
+	
+randomNumberCheck0:
+	cmp r7, #0
+	beq roundCheck
+	bne failureEnd
+
+
+randomNumberCheck1:
+	cmp r7, #1
+	beq roundCheck
+	bne failureEnd
+
+
+randomNumberCheck2:
+	cmp r7, #2
+	beq roundCheck
+	bne failureEnd
+
+
+randomNumberCheck3:
+	cmp r7, #3
+	beq roundCheck
+	bne failureEnd
+
+
+randomNumberCheck4:
+	cmp r7, #4
+	beq roundCheck
+	bne failureEnd
+
+
+randomNumberCheck5:
+	cmp r7, #5
+	beq roundCheck
+	bne failureEnd
+
+
+randomNumberCheck6:
+	cmp r7, #6
+	beq roundCheck
+	bne failureEnd
+
+
+randomNumberCheck7:
+	cmp r7, #7
+	beq roundCheck
+	bne failureEnd
+
+
+randomNumberCheck8:
+	cmp r7, #8
+	beq roundCheck
+	bne failureEnd
+
+
+randomNumberCheck9:
+	cmp r7, #9
+	beq roundCheck
+	bne failureEnd
+
+
+randomNumberCheck10:
+	cmp r7, #10
+	beq roundCheck
+	bne failureEnd
+
+
+randomNumberCheck11:
+	cmp r7, #11
+	beq roundCheck
+	bne failureEnd
+
+
+randomNumberCheck12:
+	cmp r7, #12
+	beq roundCheck
+	bne failureEnd
+
+
+randomNumberCheck13:
+	cmp r7, #13
+	beq roundCheck
+	bne failureEnd
+
+
+randomNumberCheck14:
+	cmp r7, #14
+	beq roundCheck
+	bne failureEnd
+
+
+randomNumberCheck15:
+	cmp r7, #15
+	beq roundCheck
+	bne failureEnd
+
+
+roundCheck:
+	cmp r4, #6
+	beq exit
+	add r4, r4, #1
+	BL generateRandomNumber
+
+
+failureEnd:
+	swi SWI_CLEAR_DISPLAY
+	mov r0, #12
+	mov r1, #8
+	ldr r2, =failure
+	swi SWI_DRAW_STRING
+
+
+exit:
 	swi SWI_EXIT
  
 @==============================================================================
@@ -236,6 +403,7 @@ space: .asciz " "
 decimalPoint: .asciz "."
 secondsSymbol: .asciz " s"
 initial_time: .asciz ": 00.000 s"
+failure: .asciz "PERDEU!!!"
 
 @* - 8 Segment Display Digits:
 Digits:
