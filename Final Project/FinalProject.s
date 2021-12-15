@@ -1,3 +1,13 @@
+@===============================================================================
+@ ********  - Computer Organization and Architecture - Final Project - ********
+@
+@ "Clique Rápido" game implemented in ARM7TDMI Assembly for the Bachelor of
+@ Information System Program's Computer Organization and Achitecture course at
+@ the Universidade Tecnológica Federal do Paraná.
+@
+@ Created by Lucas Iavorski Bassan and Lucian Augusto
+@===============================================================================
+
 @==============================================================================
 @ Periferic Devices Macro Definitions
 @==============================================================================
@@ -68,7 +78,7 @@
 @==============================================================================
 
 _start:
-	swi SWI_CLEAR_DISPLAY				@ Clearing display
+	swi SWI_CLEAR_DISPLAY			@ Clearing display
 	mov r0, #0						@ General purpose
 	mov r1, #0
 	mov r2, #0
