@@ -1,0 +1,450 @@
+#+TITLE: Arquitetura e Organização de Computadores - Lista de Exercícios 8
+#+AUTHOR: Lucian Augusto
+#+STARTUP: showeverything
+#+OPTIONS: date:nill toc:nil num:1
+#+LATEX_HEADER: \usepackage[a4paper,left=25mm,right=25mm,top=25mm,bottom=25mm]{geometry}
+#+LATEX_HEADER: \usepackage{xcolor}
+#+LATEX_HEADER: \usepackage{enumitem} \usepackage{amsmath}
+
+* 62. Repetir o exercício 61 considerando as seguintes alterações no sistema de cache:
++ *associativa em conjuntos de 2 vias;*
++ *modo de escrita write-back.*
+
+** a) Mostre qual seria o estado da cache e da memória principal após as seguintes operações:
++ leitura de $24$ /bytes/ a partir do endereço $0x0030$
++ escrita de $8$ /bytes/ a partir do endereço $0x0024$
++ leitura de $48$ /bytes/ a partir do endereço $0x0048$
++ escrita de $12$ /bytes/ a partir do endereço $0x0050$
++ leitura de $8$ /bytes/ a partir do endereço $0x0038$
+Para cada bloco de cache deve ser apresentado: o índice do conjunto, um
+identificador de qual bloco de memória principal está ali armazenado e o valor do
+rótulo deste bloco (se for válido), um bit indicando se o conteúdo daquele bloco
+de cache é válido ou não e os bits de “sujo” e de “idade” (se aplicáveis)
+
+** b) Quantos acessos resultarão em misses e quantos em hits?
+
+** c) Quantos bits do endereço de 16 bits são utilizados para rótulo, quantos para deslocamento do endereço dentro do bloco de cache e quantos para índice do conjunto?
+
+** d) Quais bytes da memória principal foram alterados após estas operações?
+
+** Respostas:
+
+*** a)
+
+**** Definição dos /bits/ de endereço:
+
+$N = 16$
+
+O número de /bits/ de deslocamento ($NB$) é dado por $NB = \log_{2}{TB}$. O tamanho total do bloco ($TB$) é $8$ /bytes/, $\therefore NB = \log_{2}{8} \rightarrow \boldsymbol{NB = 3}$.
+
+O número total de blocos da /cache/ ($TB$) é $8$.
+
+O número total de vias ($A$) é $2$.
+
+O número de /bits/ de índice do conjunto ($NC$) é dado por $NC = log_{2}{TC} - log_{2}{A}$, $\therefore NC = log_{2}{8} - log_{2}{2} = 3 - 1 \rightarrow \boldsymbol{NC = 2}$.
+
+O número de /bits/ do rótulo ($NR$) é dado por $NR = N - NB - NC$, $\therefore NR = 16 - 2 - 3 \rightarrow \boldsymbol{NR = 11}$.
+
+**** Simulação dos acessos:
+
++ Estado inicial da /cache/ e da /RAM/:
+
+#+begin_export latex
+{\scriptsize
+#+end_export
+#+ATTR_LATEX: :align |c|c|c|c|c|c|c|c|c|c|c|
+|------+-----+-----+-----+--------+----------+-----+-----+-----+--------+----------|
+| IC   | V   | S   | ID  | Rótulo | Conteúdo | V   | S   | ID  | Rótulo | Conteúdo |
+|------+-----+-----+-----+--------+----------+-----+-----+-----+--------+----------|
+| $00$ | $0$ | $0$ | $0$ |        |          | $0$ | $0$ | $0$ |        |          |
+|------+-----+-----+-----+--------+----------+-----+-----+-----+--------+----------|
+| $01$ | $0$ | $0$ | $0$ |        |          | $0$ | $0$ | $0$ |        |          |
+|------+-----+-----+-----+--------+----------+-----+-----+-----+--------+----------|
+| $10$ | $0$ | $0$ | $0$ |        |          | $0$ | $0$ | $0$ |        |          |
+|------+-----+-----+-----+--------+----------+-----+-----+-----+--------+----------|
+| $11$ | $0$ | $0$ | $0$ |        |          | $0$ | $0$ | $0$ |        |          |
+|------+-----+-----+-----+--------+----------+-----+-----+-----+--------+----------|
+#+begin_export latex
+}
+#+end_export
+
+Onde:
+
+$IC \rightarrow$ índice de conjunto (2 bits)
+$V \rightarrow$ válido (1 bit)
+$S \rightarrow$ sujo (1 bit)
+$ID \rightarrow$ idade relativa do conjunto (1 para menos recentemente utilizado, 0 para mais recentemente utilizado)
+
+Estado da /RAM/:
+
+Endereço mínimo $\rightarrow 0x0024$. Representando em blocos de $8$, isto é divisível por $8$, temos que o menor bloco será $0x0020$.
+Endereço máximo $\rightarrow 0x0048 + 48$ /bytes/ do acesso = $0x0090$.
+
+#+begin_export latex
+{\scriptsize
+#+end_export
+#+ATTR_LATEX: :align |c|c|
+|------------------+---------|
+| Endereço Inicial | Apelido |
+|------------------+---------|
+| $0x0020$         | $B0$    |
+|------------------+---------|
+| $0x0028$         | $B1$    |
+|------------------+---------|
+| $0x0030$         | $B2$    |
+|------------------+---------|
+| $0x0038$         | $B3$    |
+|------------------+---------|
+| $0x0040$         | $B4$    |
+|------------------+---------|
+| $0x0048$         | $B5$    |
+|------------------+---------|
+| $0x0050$         | $B6$    |
+|------------------+---------|
+| $0x0058$         | $B7$    |
+|------------------+---------|
+| $0x0060$         | $B8$    |
+|------------------+---------|
+| $0x0068$         | $B9$    |
+|------------------+---------|
+| $0x0070$         | $B10$   |
+|------------------+---------|
+| $0x0078$         | $B11$   |
+|------------------+---------|
+| $0x0080$         | $B12$   |
+|------------------+---------|
+| $0x0088$         | $B13$   |
+|------------------+---------|
+| $0x0090$         | $B14$   |
+|------------------+---------|
+#+begin_export latex
+}
+#+end_export
+
++ *leitura de $24$ /bytes/ a partir do endereço $0x0030$:*
+
+Primeiros $4$ /bytes/ (a partir de $0x0030$): $0000000000110000 \rightarrow$ Deslocamento: $000$, IC: $10$, Rótulo: $00000000001$.
+
+Não existe bloco válido no IC $10$ com rótulo $00000000001$.
+
+*MISS* $\rightarrow$ busca o bloco correspondente na /RAM/ e guarda no /cache/: Bloco correspondente $\rightarrow B2$.
+
+Assim o /cache/ será:
+
+#+begin_export latex
+{\scriptsize
+#+end_export
+#+ATTR_LATEX: :align |c|c|c|c|c|c|c|c|c|c|c|
+|------+-----+-----+-----+---------------+----------+-----+-----+-----+--------+----------|
+| IC   | V   | S   | ID  | Rótulo        | Conteúdo | V   | S   | ID  | Rótulo | Conteúdo |
+|------+-----+-----+-----+---------------+----------+-----+-----+-----+--------+----------|
+| $00$ | $0$ | $0$ | $0$ |               |          | $0$ | $0$ | $0$ |        |          |
+|------+-----+-----+-----+---------------+----------+-----+-----+-----+--------+----------|
+| $01$ | $0$ | $0$ | $0$ |               |          | $0$ | $0$ | $0$ |        |          |
+|------+-----+-----+-----+---------------+----------+-----+-----+-----+--------+----------|
+| $10$ | $1$ | $0$ | $0$ | $00000000001$ | $B2$     | $0$ | $0$ | $0$ |        |          |
+|------+-----+-----+-----+---------------+----------+-----+-----+-----+--------+----------|
+| $11$ | $0$ | $0$ | $0$ |               |          | $0$ | $0$ | $0$ |        |          |
+|------+-----+-----+-----+---------------+----------+-----+-----+-----+--------+----------|
+#+begin_export latex
+}
+#+end_export
+
+Próximos $4$ /bytes/ (a partir de $0x0034$: $0000000000110100 \rightarrow$ Deslocamento: $100$, IC: $10$, Rótulo: $00000000001$.
+
+Existe bloco válido no IC $10$ com rótulo $00000000001$.
+
+*HIT*
+
+Próximos $4$ /bytes/ (a partir de $0x0038$): $0000000000111000 \rightarrow$ Deslocamento: $000$, IC: $11$, Rótulo: $00000000001$.
+
+Não existe bloco válido no IC $11$ com rótulo $00000000001$.
+
+*MISS* $\rightarrow$ busca o bloco correspondente na /RAM/ e guarda no /cache/: Bloco correspondente $\rightarrow B3$.
+
+Assim o /cache/ será:
+
+#+begin_export latex
+{\scriptsize
+#+end_export
+#+ATTR_LATEX: :align |c|c|c|c|c|c|c|c|c|c|c|
+|------+-----+-----+-----+---------------+----------+-----+-----+-----+--------+----------|
+| IC   | V   | S   | ID  | Rótulo        | Conteúdo | V   | S   | ID  | Rótulo | Conteúdo |
+|------+-----+-----+-----+---------------+----------+-----+-----+-----+--------+----------|
+| $00$ | $0$ | $0$ | $0$ |               |          | $0$ | $0$ | $0$ |        |          |
+|------+-----+-----+-----+---------------+----------+-----+-----+-----+--------+----------|
+| $01$ | $0$ | $0$ | $0$ |               |          | $0$ | $0$ | $0$ |        |          |
+|------+-----+-----+-----+---------------+----------+-----+-----+-----+--------+----------|
+| $10$ | $1$ | $0$ | $0$ | $00000000001$ | $B2$     | $0$ | $0$ | $0$ |        |          |
+|------+-----+-----+-----+---------------+----------+-----+-----+-----+--------+----------|
+| $11$ | $1$ | $0$ | $0$ | $00000000001$ | $B3$     | $0$ | $0$ | $0$ |        |          |
+|------+-----+-----+-----+---------------+----------+-----+-----+-----+--------+----------|
+#+begin_export latex
+}
+#+end_export
+
+Próximos $4$ /bytes/ (a partir de $0x003C$): $0000000000111100 \rightarrow$ Deslocamento: $100$, IC: $11$, Rótulo: $00000000001$.
+
+Existe bloco válido no IC $11$ com rótulo $00000000001$.
+
+*HIT*
+
+Próximos $4$ /bytes/ (a partir de $0x0040$): $0000000001000000 \rightarrow$ Deslocamento: $000$, IC: $00$, Rótulo: $00000000010$.
+
+Não existe bloco válido no IC $00$ com rótulo $00000000010$.
+
+*MISS* $\rightarrow$ busca o bloco correspondente na /RAM/ e guarda no /cache/: Bloco correspondente $\rightarrow B4$.
+
+Assim o /cache/ será:
+
+#+begin_export latex
+{\scriptsize
+#+end_export
+#+ATTR_LATEX: :align |c|c|c|c|c|c|c|c|c|c|c|
+|------+-----+-----+-----+---------------+----------+-----+-----+-----+--------+----------|
+| IC   | V   | S   | ID  | Rótulo        | Conteúdo | V   | S   | ID  | Rótulo | Conteúdo |
+|------+-----+-----+-----+---------------+----------+-----+-----+-----+--------+----------|
+| $00$ | $1$ | $0$ | $0$ | $00000000010$ | $B4$     | $0$ | $0$ | $0$ |        |          |
+|------+-----+-----+-----+---------------+----------+-----+-----+-----+--------+----------|
+| $01$ | $0$ | $0$ | $0$ |               |          | $0$ | $0$ | $0$ |        |          |
+|------+-----+-----+-----+---------------+----------+-----+-----+-----+--------+----------|
+| $10$ | $1$ | $0$ | $0$ | $00000000001$ | $B2$     | $0$ | $0$ | $0$ |        |          |
+|------+-----+-----+-----+---------------+----------+-----+-----+-----+--------+----------|
+| $11$ | $1$ | $0$ | $0$ | $00000000001$ | $B3$     | $0$ | $0$ | $0$ |        |          |
+|------+-----+-----+-----+---------------+----------+-----+-----+-----+--------+----------|
+#+begin_export latex
+}
+#+end_export
+
+Próximos $4$ /bytes/ (a partir de $0x0044$): $0000000001000100 \rightarrow$ Deslocamento: $100$, IC: $00$, Rótulo: $00000000010$.
+
+Existe bloco válido no IC $00$ com rótulo $00000000010$.
+
+*HIT*
+
+Próximos $4$ /bytes/ (a partir de $0x0048$): $0000000001001000 \rightarrow$ Deslocamento: $000$, IC: $01$, Rótulo: $00000000010$.
+
+Não existe bloco válido no IC $01$ com rótulo $00000000010$.
+
+*MISS* $\rightarrow$ busca o bloco correspondente na /RAM/ e guarda no /cache/: Bloco correspondente $\rightarrow B5$.
+
+Assim o /cache/ será:
+
+#+begin_export latex
+{\scriptsize
+#+end_export
+#+ATTR_LATEX: :align |c|c|c|c|c|c|c|c|c|c|c|
+|------+-----+-----+-----+---------------+----------+-----+-----+-----+--------+----------|
+| IC   | V   | S   | ID  | Rótulo        | Conteúdo | V   | S   | ID  | Rótulo | Conteúdo |
+|------+-----+-----+-----+---------------+----------+-----+-----+-----+--------+----------|
+| $00$ | $1$ | $0$ | $0$ | $00000000010$ | $B4$     | $0$ | $0$ | $0$ |        |          |
+|------+-----+-----+-----+---------------+----------+-----+-----+-----+--------+----------|
+| $01$ | $1$ | $0$ | $0$ | $00000000010$ | $B5$     | $0$ | $0$ | $0$ |        |          |
+|------+-----+-----+-----+---------------+----------+-----+-----+-----+--------+----------|
+| $10$ | $1$ | $0$ | $0$ | $00000000001$ | $B2$     | $0$ | $0$ | $0$ |        |          |
+|------+-----+-----+-----+---------------+----------+-----+-----+-----+--------+----------|
+| $11$ | $1$ | $0$ | $0$ | $00000000001$ | $B3$     | $0$ | $0$ | $0$ |        |          |
+|------+-----+-----+-----+---------------+----------+-----+-----+-----+--------+----------|
+#+begin_export latex
+}
+#+end_export
+
+Próximos $4$ /bytes/ (a partir de $0x004C$): $0000000001001100 \rightarrow$ Deslocamento: $100$, IC: $01$, Rótulo: $00000000010$.
+
+Existe bloco válido no IC $01$ com rótulo $00000000010$.
+
+*HIT*
+
+Próximos $4$ /bytes/ (a partir de $0x0050$): $0000000001010000 \rightarrow$ Deslocamento: $000$, IC: $10$, Rótulo: $00000000010$.
+
+Não existe bloco válido no IC $10$ com rótulo $00000000010$.
+
+*MISS* $\rightarrow$ busca o bloco correspondente na /RAM/ e guarda no /cache/: Bloco correspondente $\rightarrow B6$.
+
+Assim o /cache/ será:
+
+#+begin_export latex
+{\scriptsize
+#+end_export
+#+ATTR_LATEX: :align |c|c|c|c|c|c|c|c|c|c|c|
+|------+-----+-----+-----+---------------+----------+-----+-----+-----+---------------+----------|
+| IC   | V   | S   | ID  | Rótulo        | Conteúdo | V   | S   | ID  | Rótulo        | Conteúdo |
+|------+-----+-----+-----+---------------+----------+-----+-----+-----+---------------+----------|
+| $00$ | $1$ | $0$ | $0$ | $00000000010$ | $B4$     | $0$ | $0$ | $0$ |               |          |
+|------+-----+-----+-----+---------------+----------+-----+-----+-----+---------------+----------|
+| $01$ | $1$ | $0$ | $0$ | $00000000010$ | $B5$     | $0$ | $0$ | $0$ |               |          |
+|------+-----+-----+-----+---------------+----------+-----+-----+-----+---------------+----------|
+| $10$ | $1$ | $0$ | $1$ | $00000000001$ | $B2$     | $1$ | $0$ | $0$ | $00000000010$ | $B6$     |
+|------+-----+-----+-----+---------------+----------+-----+-----+-----+---------------+----------|
+| $11$ | $1$ | $0$ | $0$ | $00000000001$ | $B3$     | $0$ | $0$ | $0$ |               |          |
+|------+-----+-----+-----+---------------+----------+-----+-----+-----+---------------+----------|
+#+begin_export latex
+}
+#+end_export
+
+Próximos $4$ /bytes/ (a partir de $0x0054$): $0000000001010100 \rightarrow$ Deslocamento: $100$, IC: $10$, Rótulo: $00000000010$.
+
+Existe bloco válido no IC $10$ com rótulo $00000000010$.
+
+*HIT*
+
++ *escrita de $8$ /bytes/ a partir do endereço $0x0024$:*
+
+Primeiros $4$ /bytes/ (a partir de $0x0024$): $0000000000100100 \rightarrow$ Deslocamento: $100$, IC: $00$, Rótulo: $00000000001$.
+
+Não existe bloco válido no IC $00$ com rótulo $00000000001$.
+
+*MISS* $\rightarrow$ busca o bloco correspondente na /RAM/ e guarda no /cache/: Bloco correspondente $\rightarrow B0$.
+
+Como é escrita, o conteúdo de $B0$ será alterado, assim teremos um novo conteúdo $B0'$, e a posição no /cache/ ficará marcado como *sujo*
+
+Assim o /cache/ será:
+
+#+begin_export latex
+{\scriptsize
+#+end_export
+#+ATTR_LATEX: :align |c|c|c|c|c|c|c|c|c|c|c|
+|------+-----+-----+-----+---------------+----------+-----+-----+-----+---------------+----------|
+| IC   | V   | S   | ID  | Rótulo        | Conteúdo | V   | S   | ID  | Rótulo        | Conteúdo |
+|------+-----+-----+-----+---------------+----------+-----+-----+-----+---------------+----------|
+| $00$ | $1$ | $0$ | $1$ | $00000000010$ | $B4$     | $1$ | $1$ | $0$ | $00000000001$ | $B0'$    |
+|------+-----+-----+-----+---------------+----------+-----+-----+-----+---------------+----------|
+| $01$ | $1$ | $0$ | $0$ | $00000000010$ | $B5$     | $0$ | $0$ | $0$ |               |          |
+|------+-----+-----+-----+---------------+----------+-----+-----+-----+---------------+----------|
+| $10$ | $1$ | $0$ | $1$ | $00000000001$ | $B2$     | $1$ | $0$ | $0$ | $00000000010$ | $B6$     |
+|------+-----+-----+-----+---------------+----------+-----+-----+-----+---------------+----------|
+| $11$ | $1$ | $0$ | $0$ | $00000000001$ | $B3$     | $0$ | $0$ | $0$ |               |          |
+|------+-----+-----+-----+---------------+----------+-----+-----+-----+---------------+----------|
+#+begin_export latex
+}
+#+end_export
+
+Próximos $4$ /bytes/ (a partir de $0x0028$): $0000000000101000 \rightarrow$ Deslocamento: $000$, IC: $01$, Rótulo: $00000000001$.
+
+Não existe bloco válido no IC $01$ com rótulo $00000000001$.
+
+*MISS* $\rightarrow$ busca o bloco correspondente na /RAM/ e guarda no /cache/: Bloco correspondente $\rightarrow B1$.
+
+Como é escrita, o conteúdo de $B1$ será alterado, assim teremos um novo conteúdo $B1'$, e a posição no /cache/ ficará marcado como *sujo*
+
+Assim o /cache/ será:
+
+#+begin_export latex
+{\scriptsize
+#+end_export
+#+ATTR_LATEX: :align |c|c|c|c|c|c|c|c|c|c|c|
+|------+-----+-----+-----+---------------+----------+-----+-----+-----+---------------+----------|
+| IC   | V   | S   | ID  | Rótulo        | Conteúdo | V   | S   | ID  | Rótulo        | Conteúdo |
+|------+-----+-----+-----+---------------+----------+-----+-----+-----+---------------+----------|
+| $00$ | $1$ | $0$ | $1$ | $00000000010$ | $B4$     | $1$ | $1$ | $0$ | $00000000001$ | $B0'$    |
+|------+-----+-----+-----+---------------+----------+-----+-----+-----+---------------+----------|
+| $01$ | $1$ | $0$ | $1$ | $00000000010$ | $B5$     | $1$ | $1$ | $0$ | $00000000001$ | $B1'$    |
+|------+-----+-----+-----+---------------+----------+-----+-----+-----+---------------+----------|
+| $10$ | $1$ | $0$ | $1$ | $00000000001$ | $B2$     | $1$ | $0$ | $0$ | $00000000010$ | $B6$     |
+|------+-----+-----+-----+---------------+----------+-----+-----+-----+---------------+----------|
+| $11$ | $1$ | $0$ | $0$ | $00000000001$ | $B3$     | $0$ | $0$ | $0$ |               |          |
+|------+-----+-----+-----+---------------+----------+-----+-----+-----+---------------+----------|
+#+begin_export latex
+}
+#+end_export
+
++ leitura de $48$ /bytes/ a partir do endereço $0x0048$:
+
+Primeiros $4$ /bytes/ (a partir de $0x0048$): $0000000001001000 \rightarrow$ Deslocamento: $000$, IC: $01$, Rótulo: $00000000010$.
+
+Existe bloco válido no IC $01$ com rótulo $00000000010$.
+
+*HIT*
+
+Próximos $4$ /bytes/ (a partir de $0x004C$): $0000000001001100 \rightarrow$ Deslocamento: $100$, IC: $01$, Rótulo: $00000000010$.
+
+Existe bloco válido no IC $01$ com rótulo $00000000010$.
+
+*HIT*
+
+Próximos $4$ /bytes/ (a partir de $0x0050$): $0000000001010000 \rightarrow$ Deslocamento: $000$, IC: $10$, Rótulo: $00000000010$.
+
+Existe bloco válido no IC $10$ com rótulo $00000000010$.
+
+*HIT*
+
+Próximos $4$ /bytes/ (a partir de $0x0054$): $0000000001010100 \rightarrow$ Deslocamento: $100$, IC: $10$, Rótulo: $00000000010$.
+
+Existe bloco válido no IC $10$ com rótulo $00000000010$.
+
+*HIT*
+
+Próximos $4$ /bytes/ (a partir de $0x0058$): $0000000001011000 \rightarrow$ Deslocamento: $000$, IC: $11$, Rótulo: $00000000010$.
+
+Não existe bloco válido no IC $11$ com rótulo $00000000010$.
+
+*MISS* $\rightarrow$ busca o bloco correspondente na /RAM/ e guarda no /cache/: Bloco correspondente $\rightarrow B7$.
+
+Assim o /cache/ será:
+
+#+begin_export latex
+{\scriptsize
+#+end_export
+#+ATTR_LATEX: :align |c|c|c|c|c|c|c|c|c|c|c|
+|------+-----+-----+-----+---------------+----------+-----+-----+-----+---------------+----------|
+| IC   | V   | S   | ID  | Rótulo        | Conteúdo | V   | S   | ID  | Rótulo        | Conteúdo |
+|------+-----+-----+-----+---------------+----------+-----+-----+-----+---------------+----------|
+| $00$ | $1$ | $0$ | $1$ | $00000000010$ | $B4$     | $1$ | $1$ | $0$ | $00000000001$ | $B0'$    |
+|------+-----+-----+-----+---------------+----------+-----+-----+-----+---------------+----------|
+| $01$ | $1$ | $0$ | $1$ | $00000000010$ | $B5$     | $1$ | $1$ | $0$ | $00000000001$ | $B1'$    |
+|------+-----+-----+-----+---------------+----------+-----+-----+-----+---------------+----------|
+| $10$ | $1$ | $0$ | $1$ | $00000000001$ | $B2$     | $1$ | $0$ | $0$ | $00000000010$ | $B6$     |
+|------+-----+-----+-----+---------------+----------+-----+-----+-----+---------------+----------|
+| $11$ | $1$ | $0$ | $1$ | $00000000001$ | $B3$     | $1$ | $0$ | $0$ | $00000000010$ | $B6$     |
+|------+-----+-----+-----+---------------+----------+-----+-----+-----+---------------+----------|
+#+begin_export latex
+}
+#+end_export
+
+Próximos $4$ /bytes/ (a partir de $0x005C$): $0000000001011100 \rightarrow$ Deslocamento: $100$, IC: $11$, Rótulo: $00000000010$.
+
+Existe bloco válido no IC $11$ com rótulo $00000000010$.
+
+*HIT*
+
+Próximos $4$ /bytes/ (a partir de $0x0060$): $0000000001100000 \rightarrow$ Deslocamento: $000$, IC: $00$, Rótulo: $00000000011$.
+
+Não existe bloco válido no IC $00$ com rótulo $00000000011$.
+
+*MISS* $\rightarrow$ busca o bloco correspondente na /RAM/ e guarda no /cache/: Bloco correspondente $\rightarrow B8$.
+
+Assim o /cache/ será:
+
+#+begin_export latex
+{\scriptsize
+#+end_export
+#+ATTR_LATEX: :align |c|c|c|c|c|c|c|c|c|c|c|
+|------+-----+-----+-----+---------------+----------+-----+-----+-----+---------------+----------|
+| IC   | V   | S   | ID  | Rótulo        | Conteúdo | V   | S   | ID  | Rótulo        | Conteúdo |
+|------+-----+-----+-----+---------------+----------+-----+-----+-----+---------------+----------|
+| $00$ | $1$ | $0$ | $0$ | $00000000011$ | $B4$     | $1$ | $1$ | $1$ | $00000000001$ | $B0'$    |
+|------+-----+-----+-----+---------------+----------+-----+-----+-----+---------------+----------|
+| $01$ | $1$ | $0$ | $1$ | $00000000010$ | $B5$     | $1$ | $1$ | $0$ | $00000000001$ | $B1'$    |
+|------+-----+-----+-----+---------------+----------+-----+-----+-----+---------------+----------|
+| $10$ | $1$ | $0$ | $1$ | $00000000001$ | $B2$     | $1$ | $0$ | $0$ | $00000000010$ | $B6$     |
+|------+-----+-----+-----+---------------+----------+-----+-----+-----+---------------+----------|
+| $11$ | $1$ | $0$ | $1$ | $00000000001$ | $B3$     | $1$ | $0$ | $0$ | $00000000010$ | $B6$     |
+|------+-----+-----+-----+---------------+----------+-----+-----+-----+---------------+----------|
+#+begin_export latex
+}
+#+end_export
+
+
+*** b)
++ Número total de Misses:
++ Número total de Hits:
+
+
+*** c)
+
++ Número de /bits/ utilizado para Rótulo: $\boldsymbol{NR = 11}$;
++ Número de /bits/ utilizado para deslocamento de endereço: $\boldsymbol{NB = 3}$;
++ Número de /bits/ utilizado índice do conjunto: $\boldsymbol{NC = 2}$;
+
+
+*** d)
